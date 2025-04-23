@@ -1,0 +1,354 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "User Support API",
+    "description": "# Welcome to Supportify\n\n**Supportify** is a tech company dedicated to simplifying customer support for businesses of all sizes. Our **Supportify APIs** provides developers with the tools they need to integrate powerful support ticket management, user interaction tracking, and automated workflows into their applications. Whether you're a SaaS company, e-commerce platform, or help desk, Supportify helps you deliver exceptional support experiences.\n\n## Getting Started\n\nWelcome to **Supportify API** version 1.0.0! Currently, the API includes one resource: the **users** resource. No authentication is required to make calls to the endpoints in this resource. Let’s walk you through creating a sample support ticket as a user.\n\n### Creating a Support Ticket\n* `baseUrl` - [https://jogmg-backend.onrender.com](baseUrl)\n\nTo create a support ticket, send a `POST` request to the `/users` endpoint with the following JSON data in your request body:\n\n```json\n{\n    \"name\":\"Gabriel\",\n    \"email\":\"gabriel@yahoo.com\",\n    \"subject\":\"Client Rent\",\n    \"message\":\"Client has refused to pay her rent for the past 365 days\"\n}\n```\n\n### Example Request\n```JavaScript\nasync function sendRequest() {\n  const url = \"https://jogmg-backend.onrender.com/users\";\n  const data = {\n    name: \"Gabriel\",\n    email: \"gabriel@yahoo.com\",\n    subject: \"Client Rent\",\n    message: \"Client has refused to pay her rent for the past 365 days\"\n  };\n\n  try {\n    const response = await fetch(url, {\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\"\n      },\n      body: JSON.stringify(data)\n    });\n\n    if (!response.ok) {\n      throw new Error(`HTTP error! Status: ${response.status}`);\n    }\n\n    const responseData = await response.json();\n    console.log(\"Request successful:\", responseData);\n  } catch (error) {\n    console.error(\"Error:\", error);\n  }\n}\n\n// Call the function\nsendRequest();\n```\n\n### Example Response\n```json\n{\n    \"error\": false,\n    \"statusCode\": 201,\n    \"message\": \"User created successfully\",\n    \"data\": {\n        \"name\": \"Gabriel\",\n        \"email\": \"gabriel@yahoo.com\",\n        \"subject\": \"Client Rent\",\n        \"message\": \"Client has refused to pay her rent for the past 365 days\",\n        \"_id\": \"67df14b8838694a04c0f3771\",\n        \"createdAt\": \"2025-03-22T19:51:20.559Z\",\n        \"updatedAt\": \"2025-03-22T19:51:20.559Z\",\n        \"__v\": 0\n    }\n}\n```\n\n**Voila!** You’ve just made your first request to the Supportify API. This example demonstrates how users can send feedback by creating support tickets.\n\n\n\n## Errors\n\nThe error codes follow the standard HTTP conventions. Below is a table of common status codes you might encounter when using the Supportify API. While some of these codes indicate success (like 200 and 201), others represent errors that you should handle in your application.\n\n| Status Code | Status Text | Description |\n| ------------ | ------------- | ------------ |\n| 200 | OK | The request was successful, and the response contains the requested data. |\n| 201| Created | The request was successful, and a new resource was created|\n| 404| Not Found | The requested resource (e.g., a user or ticket) does not exist.|\n| 500| Internal Server Error | Something went wrong on the server. Please try again later.|",
+    "version": "1.0",
+    "license": {
+      "name": "Supportify License 1.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://jogmg-backend.onrender.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Tickets",
+      "description": "Get User Support Ticket Details"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "User Tickets"
+        ],
+        "summary": "Create a new ticket",
+        "description": "This endpoint allows users to submit their details (name, email, subject, and message) via a contact form. Upon submission, a new support ticket is automatically created in the system. Admins can then manage these tickets through the admin dashboard",
+        "operationId": "CreateUserSupportTicket",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/requestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Users"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User Tickets"
+        ],
+        "summary": "Get all user support tickets",
+        "description": " This endpoint retrieves all support tickets created by users who have submitted feedback via the contact form.",
+        "operationId": "AllUserSupportTickets",
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Users retrieved successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Users"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "User Tickets"
+        ],
+        "summary": "Get the ticket details for a specific user",
+        "description": "This endpoint retrieves the details of a support ticket created by a specific user.",
+        "operationId": "SpecificUserSupportTicket",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User retrieved successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Tickets"
+        ],
+        "summary": "Update details of a ticket ",
+        "description": "Given that a user has created a ticket. The admin can update details of this ticket based on the solution that has been taken on it. Only fields required to be updated should be sent in the reqeust body.",
+        "operationId": "updateSpecificUserTicket",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "description": "Only include the properties that need to be updated in the request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/requestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User updated successsfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Tickets"
+        ],
+        "summary": "Delete a ticket",
+        "description": "Admin users can delete a specific user support ticket if the ticket has been resolved or is deemed invalid. ",
+        "operationId": "deleteSpecficUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 34232532534543
+          },
+          "name": {
+            "type": "string",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "example": "johndoe@gmail.com"
+          },
+          "subject": {
+            "type": "string",
+            "example": "Login information not working"
+          },
+          "message": {
+            "type": "string",
+            "example": "Please rectify"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-03-03T22:23:00.236Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2025-03-03T22:23:00.236Z"
+          },
+          "__v": {
+            "type": "number",
+            "description": "The serial number of the ticket",
+            "example": 5
+          }
+        }
+      },
+      "requestBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "example": "johndoe@gmail.com"
+          },
+          "subject": {
+            "type": "string",
+            "example": "ticket subject"
+          },
+          "message": {
+            "type": "string",
+            "example": "support ticket by user"
+          }
+        }
+      },
+      "errorMessage": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": true
+          },
+          "statusCode": {
+            "type": "number",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "User not found"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "description": "The user's unique ID",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "23423534534634ed"
+        }
+      }
+    }
+  }
+}
